@@ -422,8 +422,8 @@ function renderList(rub){
       <div class="intro">
         <div class="stamp">PIÈCE À CONVICTION</div>
         <h2>Ce que la classe a fabriqué — et démonté.</h2>
-        <p>Voici les articles complotistes produits par les élèves lors de l'atelier « Un Pacte Mondial ». Chacun a inventé une fausse information à partir d'un brief tiré au sort, l'a rédigée « à la manière » d'un véritable expert de géopolitique, puis a <b>identifié les procédés de manipulation</b> qu'il avait lui-même employés.</p>
-        <p>Cliquez sur un article pour le lire. En bas de chaque article, l'encart rouge « Déconstruction » remplace la biographie du journaliste : il liste les ficelles utilisées. C'est l'envers du décor.</p>
+        <p>Voici les articles complotistes produits par les élèves lors de l'atelier «\u202FUn Pacte Mondial\u202F». Chacun a inventé une fausse information à partir d'un brief tiré au sort, l'a rédigée «\u202Fà la manière\u202F» d'un véritable expert de géopolitique, puis a <b>identifié les procédés de manipulation</b> qu'il avait lui-même employés.</p>
+        <p>Cliquez sur un article pour le lire. En bas de chaque article, l'encart rouge «\u202FDéconstruction\u202F» remplace la biographie du journaliste\u202F: il liste les ficelles utilisées. C'est l'envers du décor.</p>
       </div>`;
     // tous les articles, regroupés par rubrique dans l'ordre
     ORDER.forEach(r => {
@@ -448,7 +448,7 @@ function renderList(rub){
 function rubBannerHTML(r){
   const R = RUBRIQUES[r];
   const wm = {hard:"Hard",soft:"Soft",smart:"Smart",sharp:"Sharp"}[r];
-  return `<div class="rub-banner ${r}"><h2>${R.nom}</h2><p>« ${R.sous} »</p><span class="wm">${wm}</span></div>`;
+  return `<div class="rub-banner ${r}"><h2>${R.nom}</h2><p>«\u202F${R.sous}\u202F»</p><span class="wm">${wm}</span></div>`;
 }
 
 function cardHTML(a){
@@ -478,7 +478,7 @@ function openArticle(id){
       <button class="back" id="backBtn">← Retour à la compilation</button>
       <div class="af-banner ${a.rub}">
         <span class="name">${R.nom}</span>
-        <span class="desc">« ${R.sous} »</span>
+        <span class="desc">«\u202F${R.sous}\u202F»</span>
       </div>
       <div class="af-overline">${esc(a.overline)} · Par ${esc(a.plume)} · Un Pacte Mondial · Édition fictive HGGSP</div>
       <h1 class="af-title">${esc(a.titre)}</h1>
@@ -517,7 +517,14 @@ $$("#rubnav button").forEach(b => b.addEventListener("click", () => {
 }));
 
 /* ---------- Helper ---------- */
-function esc(s){return (s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function esc(s){
+  s = (s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  // Typographie française : espaces insécables fines, jamais de guillemet/ponctuation orphelin en bord de ligne
+  s = s.replace(/«\s*/g, '«\u202F');          // « + espace fine insécable
+  s = s.replace(/\s*»/g, '\u202F»');          // espace fine insécable + »
+  s = s.replace(/\s*([;:!?])/g, '\u202F$1');  // espace fine insécable avant ; : ! ?
+  return s;
+}
 
 /* ---------- Init ---------- */
 renderList("all");
